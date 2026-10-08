@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>سماعات لاسلكية برو | المتجر</title>
+  <meta name="description" content="سماعات بلوتوث بعزل ضوضاء وبطارية تدوم 40 ساعة. ادفع بأمان عبر Paymob.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="product">
+
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html">صدى</a>
+      <span class="topbar__note">دفع آمن عبر Paymob</span>
+    </div>
+  </header>
+
+  <main class="container product">
+    <section class="product__media" aria-label="صورة المنتج">
+      <svg viewBox="0 0 400 400" role="img" aria-label="سماعات لاسلكية برو" class="product__svg">
+        <rect width="400" height="400" rx="28" fill="#0F2A2E"/>
+        <circle cx="200" cy="210" r="140" fill="#17414A"/>
+        <path d="M95 235v-35a105 105 0 0 1 210 0v35" fill="none" stroke="#F2A900" stroke-width="18" stroke-linecap="round"/>
+        <rect x="70" y="225" width="64" height="104" rx="26" fill="#EEF2F1"/>
+        <rect x="266" y="225" width="64" height="104" rx="26" fill="#EEF2F1"/>
+        <rect x="84" y="245" width="36" height="64" rx="16" fill="#F2A900"/>
+        <rect x="280" y="245" width="36" height="64" rx="16" fill="#F2A900"/>
+      </svg>
+    </section>
+
+    <section class="product__info">
+      <h1 id="product-name">سماعات لاسلكية برو</h1>
+      <p class="product__desc" id="product-desc">
+        سماعات بلوتوث بعزل ضوضاء نشط وبطارية تدوم 40 ساعة. خفيفة ومريحة لاستخدام اليوم بالكامل،
+        مع ميكروفون واضح للمكالمات وشحن سريع يمنحك 5 ساعات تشغيل في 10 دقائق.
+      </p>
+
+      <ul class="product__facts">
+        <li>عزل ضوضاء نشط</li>
+        <li>بطارية 40 ساعة</li>
+        <li>ضمان سنة</li>
+      </ul>
+
+      <div class="product__buy">
+        <p class="price" id="product-price" aria-live="polite">—</p>
+        <button type="button" class="btn btn--primary btn--lg" id="buy-btn">اشترِ الآن</button>
+      </div>
+      <p class="product__secure">لا نحفظ بيانات بطاقتك. تُدخلها في صفحة Paymob الآمنة فقط.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> صدى. جميع الحقوق محفوظة.</div>
+  </footer>
+
+  <!-- نموذج الدفع -->
+  <div class="modal" id="checkout-modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+      <button type="button" class="modal__close" data-close aria-label="إغلاق">×</button>
+      <h2 id="checkout-title">إتمام الشراء</h2>
+
+      <form id="checkout-form" novalidate>
+        <div class="field">
+          <label for="fullName">الاسم الكامل</label>
+          <input type="text" id="fullName" name="fullName" autocomplete="name" required minlength="3" maxlength="100" placeholder="مثال: أحمد محمد علي">
+        </div>
+
+        <div class="field">
+          <label for="email">البريد الإلكتروني</label>
+          <input type="email" id="email" name="email" autocomplete="email" required maxlength="254" placeholder="name@example.com" dir="ltr">
+        </div>
+
+        <div class="field">
+          <label for="phone">رقم الهاتف</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" required inputmode="tel" placeholder="01012345678" dir="ltr">
+        </div>
+
+        <div class="field field--readonly">
+          <label for="productField">المنتج</label>
+          <input type="text" id="productField" readonly tabindex="-1">
+        </div>
+
+        <div class="field field--readonly">
+          <label for="priceField">السعر النهائي</label>
+          <input type="text" id="priceField" readonly tabindex="-1">
+        </div>
+
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+
+        <button type="submit" class="btn btn--primary btn--block" id="pay-btn">الدفع الآن</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- شاشة التحميل -->
+  <div class="loading" id="loading" hidden aria-live="polite">
+    <div class="loading__box">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>جارٍ تحويلك إلى صفحة الدفع الآمنة…</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

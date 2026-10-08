@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>نتيجة الدفع | المتجر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="success">
+
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html">صدى</a>
+    </div>
+  </header>
+
+  <main class="container result">
+    <!-- حالة التحقق -->
+    <section class="result__card" id="state-checking" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <h1>جارٍ التحقق من الدفع…</h1>
+      <p>لحظات من فضلك، نؤكد العملية مع الخادم.</p>
+    </section>
+
+    <!-- حالة النجاح -->
+    <section class="result__card result__card--ok" id="state-success" hidden>
+      <div class="result__icon result__icon--ok" aria-hidden="true">✓</div>
+      <h1>تم الدفع بنجاح</h1>
+      <p>شكرًا لك! تم تأكيد عملية الدفع وسنتواصل معك على بياناتك لتأكيد الطلب.</p>
+
+      <dl class="result__details">
+        <div><dt>رقم الطلب</dt><dd id="order-id" dir="ltr">—</dd></div>
+        <div><dt>المبلغ</dt><dd id="order-amount">—</dd></div>
+      </dl>
+
+      <a class="btn btn--primary" href="index.html">العودة للمتجر</a>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
