@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>متجري</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d1d1b;--mut:#6b6b66;--line:#e2e0d8;--acc:#e60000;--ok:#1a7f4b;--okbg:#e6f4ec}
+@media(prefers-color-scheme:dark){:root{--bg:#161615;--card:#212120;--ink:#f1f0ea;--mut:#a3a29a;--line:#34342f;--okbg:#17301f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo',Tahoma,sans-serif;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header{padding:14px 0;font-weight:800;font-size:1.3rem}
+.grid{display:grid;gap:14px}
+.card{display:grid;grid-template-columns:110px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.card .img{width:110px;height:110px;border-radius:10px;background:linear-gradient(135deg,#d9d6cc,#bdb9ab);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:.75rem;text-align:center}
+.card .img img{width:100%;height:100%;object-fit:cover}
+.card h3{margin:0;font-size:1.1rem}
+.card .desc{margin:2px 0 6px;color:var(--mut);font-size:.9rem;white-space:pre-line}
+.price{font-weight:800;color:var(--acc);font-size:1.15rem}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;flex-wrap:wrap}
+.sub{padding:10px 22px;border:0;border-radius:10px;background:var(--acc);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.sub.on{background:var(--ok)}
+.card.sel{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok) inset}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:20px}
+.box h2{margin:0 0 12px;font-size:1.25rem}
+label{display:block;font-weight:600;margin:12px 0 4px}
+.req{color:var(--acc)}
+.opt{color:var(--mut);font-weight:400;font-size:.85rem}
+input[type=text],input[type=tel],textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+input.bad{border-color:var(--acc)}
+input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.err{color:var(--acc);font-size:.9rem;min-height:1.2em}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:12px;background:var(--acc);color:#fff;font:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;margin-top:12px}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.summary{font-size:.95rem}
+.summary div{display:flex;justify-content:space-between;gap:8px;padding:2px 0}
+.total{display:flex;justify-content:space-between;font-weight:800;font-size:1.15rem;padding:10px 0;border-top:1px dashed var(--line);margin-top:10px}
+.vf{background:var(--okbg);border-radius:12px;padding:14px;margin:12px 0}
+.vf .num{font-size:1.6rem;font-weight:800;letter-spacing:1px;direction:ltr;display:inline-block}
+.vf button{margin-inline-start:8px;padding:4px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.notice{background:#fff3cd;color:#6b4e00;border-radius:10px;padding:10px 12px;font-size:.9rem;margin:10px 0}
+.safe{font-size:.85rem;color:var(--mut)}
+.check{display:flex;gap:10px;align-items:flex-start;margin-top:12px}
+.check input{width:20px;height:20px;margin-top:5px;accent-color:var(--acc)}
+.check label{margin:0;font-weight:400}
+.status{margin-top:10px;font-size:.95rem;color:var(--acc)}
+.success{text-align:center}
+.success .ic{font-size:3rem}
+.success .sum{background:var(--okbg);border-radius:12px;padding:12px;text-align:start;margin:10px 0}
+.success button{padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+[hidden]{display:none!important}
+@media(max-width:420px){.card{grid-template-columns:84px 1fr}.card .img{width:84px;height:84px}.vf .num{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header id="storeName"></header>
+
+<div id="orderView">
+  <section class="grid" id="products" aria-label="الخدمات"></section>
+
+  <form class="box" id="orderForm" novalidate hidden>
+    <h2>إتمام الاشتراك</h2>
+
+    <div class="summary" id="summary"></div>
+    <div class="total"><span>الإجمالي</span><span id="total"></span></div>
+    <div class="err" data-for="items"></div>
+    <div class="safe" style="margin-top:6px">لتغيير الخدمة اضغط «اشترك الآن» على خدمة أخرى.</div>
+
+    <label for="name">اسمك كامل<span class="req">*</span></label>
+    <input type="text" id="name" autocomplete="name">
+    <div class="err" data-for="name"></div>
+
+    <label for="phone">رقمك <span class="req">*</span></label>
+    <input type="tel" id="phone" inputmode="numeric" autocomplete="tel" placeholder="01XXXXXXXXX" dir="ltr" style="text-align:right">
+    <div class="err" data-for="phone"></div>
+
+    <label for="code">كودك <span class="req">*</span></label>
+    <input type="text" id="code" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="أرقام فقط" dir="ltr" style="text-align:right">
+    <div class="err" data-for="code"></div>
+
+    <label for="custom" id="customLabel"></label>
+    <input type="text" id="custom" autocomplete="off">
+    <div class="err" data-for="custom"></div>
+
+    <p class="safe">❗بمجرد تأكيدك ان المنصه اتحلت عندك الكود و الباسورد بيتمسحو من اي سجلات عندنا❗</p>
+    <p class="safe">❗احنا مش مسؤولين عن اي اخطاء في الكود او الباسورد ❗</p>
+
+    <h2 style="margin-top:22px">الدفع عن طريق Vodafone Cash</h2>
+    <div class="vf">
+      <div>حوّل المبلغ إلى رقم Vodafone Cash:</div>
+      <div><span class="num" id="vfNum"></span><button type="button" id="copyBtn">نسخ</button></div>
+      <div style="margin-top:6px">المبلغ المطلوب دفعه: <strong id="vfTotal"></strong></div>
+      <label for="txn">رقم المرجع / رقم العملية <span class="req">*</span></label>
+      <input type="text" id="txn" inputmode="numeric" autocomplete="off" placeholder="الرقم الذي وصلك في رسالة التحويل" dir="ltr" style="text-align:right">
+      <div class="err" data-for="txn"></div>
+    </div>
+    <div class="notice">ℹ️ اول ما نستلم الطلب و التاكد من الدفع هنتواصل معاك علي رقمك</div>
+
+    <div class="check">
+      <input type="checkbox" id="paidCheck">
+      <label for="paidCheck">أؤكد أنني حوّلت المبلغ المطلوب إلى الرقم المذكور.</label>
+    </div>
+    <div class="err" data-for="paidCheck"></div>
+
+    <button class="btn" id="submitBtn" type="submit">تأكيد الطلب بعد الدفع</button>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </form>
+</div>
+
+<section class="box success" id="done" hidden tabindex="-1">
+  <div class="ic">✅</div>
+  <h2>تم استلام طلبك</h2>
+  <p>وصل طلبك إلينا. <b>هذا ليس تأكيدًا للدفع</b> — سنراجع التحويل ونتأكد من وصول المبلغ، ثم نتواصل معك.</p>
+  <div class="sum" id="doneSum"></div>
+  <button type="button" id="newOrder">طلب جديد</button>
+</section>
+</div>
+
+<script>
+/* ==================== الإعدادات — عدّل من هنا ==================== */
+const VODAFONE_CASH_NUMBER = "01097640142";
+const WORKER_URL = "https://alsalama-orders-bot.mrwalhdydy30.workers.dev/";
+const STORE_NAME = "متجري";
+const CURRENCY   = "جـ";
+
+
+const CUSTOM_FIELD = {
+  label: "باسوردك",
+  placeholder: "",
+  errorMessage: "هحليلك منغير باسورد؟"
+};
+
+const PRODUCTS = [
+  {
+    id: "qureo",
+    name: "حل المنصه اليابانيه QUREO",
+    price: 70,
+    description: "ريح دماغك من اول 20 فصل من QUREO و خليك في الامان 😉",
+    image: "as.jpg"
+  },
+  // {
+  //   id: "product2",
+  //   name: "اسم الخدمة الثانية",
+  //   price: 100,
+  //   description: "وصف الخدمة",
+  //   image: "images/2.jpg"
+  // },
+];
+
+
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("ar-EG") + " " + CURRENCY;
+let selectedId = null;
+
+const selected = () => PRODUCTS.filter(p => p.id === selectedId);
+const total = () => selected().reduce((t,p) => t + p.price, 0);
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function init(){
+  document.title = STORE_NAME;
+  $("storeName").textContent = STORE_NAME;
+  $("vfNum").textContent = VODAFONE_CASH_NUMBER;
+  $("customLabel").append(CUSTOM_FIELD.label + " ", el("span","req","*"));
+  $("custom").placeholder = CUSTOM_FIELD.placeholder;
+
+  const list = $("products");
+  PRODUCTS.forEach(p => {
+    const card = el("article","card");
+    const img = el("div","img");
+    if (p.image){
+      const im = new Image(); im.src = p.image; im.alt = p.name;
+      im.onerror = () => { img.textContent = "صورة الخدمة"; };
+      img.appendChild(im);
+    } else img.textContent = "صورة الخدمة";
+
+    const info = el("div");
+    info.append(el("h3","",p.name), el("div","desc",p.description), el("div","price",fmt(p.price)));
+
+    const row = el("div","row");
+    const btn = el("button","sub","اشترك الآن");
+    btn.type = "button";
+    btn.onclick = () => {
+      selectedId = p.id;
+      refresh();
+      $("orderForm").hidden = false;
+      $("orderForm").scrollIntoView({behavior:"smooth", block:"start"});
+    };
+    row.appendChild(btn);
+    info.appendChild(row);
+
+    p._card = card; p._btn = btn;
+    card.append(img, info);
+    list.appendChild(card);
+  });
+  refresh();
+}
+
+function refresh(){
+  PRODUCTS.forEach(p => {
+    const on = p.id === selectedId;
+    p._card.classList.toggle("sel", on);
+    p._btn.classList.toggle("on", on);
+    p._btn.textContent = on ? "✓ تم اختيار هذه الخدمة" : "اشترك الآن";
+  });
+  const s = $("summary"); s.textContent = "";
+  selected().forEach(p => {
+    const d = el("div");
+    d.append(el("span","",p.name), el("span","",fmt(p.price)));
+    s.appendChild(d);
+  });
+  $("total").textContent = $("vfTotal").textContent = fmt(total());
+  if (selectedId) setErr("items","");
+}
+
+$("copyBtn").onclick = async () => {
+  try { await navigator.clipboard.writeText(VODAFONE_CASH_NUMBER); $("copyBtn").textContent = "تم النسخ"; }
+  catch(e){ $("copyBtn").textContent = "انسخ يدويًا"; }
+  setTimeout(() => $("copyBtn").textContent = "نسخ", 1800);
+};
+
+const latin = s => s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+function setErr(id, msg){
+  const e = document.querySelector('[data-for="' + id + '"]');
+  if (e) e.textContent = msg || "";
+  const i = $(id);
+  if (i && i.type !== "checkbox") i.classList.toggle("bad", !!msg);
+  return !msg;
+}
+function validate(){
+  const name = $("name").value.trim();
+  const phone = latin($("phone").value).replace(/[\s-]/g,"");
+  const code = latin($("code").value).trim();
+  const custom = $("custom").value.trim();
+  const txn = latin($("txn").value).replace(/\s/g,"");
+  const r = [
+    setErr("items",  selected().length ? "" : "اختار الخدمة الأول بالضغط على «اشترك الآن»."),
+    setErr("name",   name.split(/\s+/).filter(Boolean).length >= 2 ? "" : "اكتب اسمك عشان العشره"),
+    setErr("phone",  /^(\+?20|0)?1[0125]\d{8}$/.test(phone) ? "" : "اكتب رقمك عدل عشان نعرف نتواصل معاك 🤦"),
+    setErr("code",   /^\d{3,}$/.test(code) ? "" : "الكود ارقام بس "),
+    setErr("custom", custom.length >= 1 ? "" : CUSTOM_FIELD.errorMessage),
+    setErr("txn",    txn.length >= 6 ? "" : "رقم العملية إجباري، اكتبه كما وصلك في رسالة التحويل."),
+    setErr("paidCheck", $("paidCheck").checked ? "" : "أكّد إنك حوّلت المبلغ قبل ما تبعت الطلب.")
+  ];
+  return r.every(Boolean);
+}
+
+
+let sending = false;
+$("orderForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (sending) return;
+  $("status").textContent = "";
+  if (!validate()){
+    const first = document.querySelector(".err:not(:empty)");
+    if (first) first.scrollIntoView({block:"center", behavior:"smooth"});
+    return;
+  }
+
+  const items = selected().map(p => ({ name:p.name, price:p.price, quantity:1, total:p.price }));
+  const sum = total();
+  const txn = latin($("txn").value).replace(/\s/g,"");
+  const customVal = $("custom").value.trim();
+
+  const notes = [
+    CUSTOM_FIELD.label + ": " + customVal,
+    "الإجمالي المطلوب: " + sum + " " + CURRENCY,
+    "رقم المرجع/العملية: " + txn,
+    "حالة الدفع: بانتظار مراجعة التحويل (لم يتم التحقق تلقائيًا)"
+  ].filter(Boolean).join("\n");
+
+  const payload = {
+    name: $("name").value.trim(),
+    phone: latin($("phone").value).replace(/[\s-]/g,""),
+    student_code: latin($("code").value).trim(),
+    items,
+    notes,
+    payment_method: "Vodafone Cash"
+  };
+
+  sending = true;
+  $("submitBtn").disabled = true;
+  $("submitBtn").textContent = "جارٍ إرسال الطلب…";
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 20000);
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: ctrl.signal
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    showDone(items, sum, txn);
+  } catch(err){
+    $("status").textContent = err.name === "AbortError"
+      ? "انتهت مهلة الإرسال. تأكد من الإنترنت وحاول مرة أخرى."
+      : "تعذّر إرسال الطلب. حاول مرة أخرى، وإن تكرر الأمر تواصل معنا مباشرة.";
+  } finally {
+    clearTimeout(timer);
+    sending = false;
+    $("submitBtn").disabled = false;
+    $("submitBtn").textContent = "تأكيد الطلب بعد الدفع";
+  }
+});
+
+function showDone(items, sum, txn){
+  const box = $("doneSum"); box.textContent = "";
+  items.forEach(i => box.appendChild(el("div","", i.name)));
+  box.appendChild(el("div","","الإجمالي: " + fmt(sum)));
+  if (txn) box.appendChild(el("div","","رقم المرجع: " + txn));
+  $("orderView").hidden = true;
+  $("done").hidden = false;
+  $("done").focus();
+  window.scrollTo({top:0});
+}
+$("newOrder").onclick = () => {
+  $("orderForm").reset();
+  selectedId = null;
+  refresh();
+  $("orderForm").hidden = true;
+  $("done").hidden = true;
+  $("orderView").hidden = false;
+};
+
+$("code").addEventListener("input", () => { $("code").value = latin($("code").value).replace(/\D/g,""); });
+["name","phone","code","custom","txn"].forEach(id => $(id).addEventListener("input", () => setErr(id,"")));
+$("paidCheck").addEventListener("change", () => setErr("paidCheck",""));
+init();
+</script>
+</body>
+</html>
